@@ -1,21 +1,16 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_harness::test_runner)]
+#![test_runner(mini_os::test_harness::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-#[cfg(test)]
-mod test_harness;
-
-mod vga_buffer;
-mod volatile;
-
 use core::panic::PanicInfo;
+
+use mini_os::println;
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     println!("Hello World 中文 hey{}", "!");
-    // panic!("Some panic message");
 
     #[cfg(test)]
     test_main();
@@ -34,7 +29,7 @@ fn panic(info: &PanicInfo) -> ! {
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    crate::test_harness::test_panic_handler(info);
+    mini_os::test_harness::test_panic_handler(info);
     // loop {}
 }
 
