@@ -5,29 +5,16 @@
 #![reexport_test_harness_main = "test_main"]
 
 #[cfg(test)]
-mod test_harness;
-
-mod vga_buffer;
-mod volatile;
-
 use core::panic::PanicInfo;
 
+pub mod test_harness;
+pub mod vga_buffer;
+pub mod volatile;
+
+#[cfg(test)]
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World 中文 hey{}", "!");
-    // panic!("Some panic message");
-
-    #[cfg(test)]
     test_main();
-
-    loop {}
-}
-
-/// This function is called on panic.
-#[cfg(not(test))]
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    println!("{}", info);
     loop {}
 }
 
@@ -35,10 +22,9 @@ fn panic(info: &PanicInfo) -> ! {
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
     crate::test_harness::test_panic_handler(info);
-    // loop {}
 }
 
 #[test_case]
 fn trivial_assertion() {
-    assert_eq!(0, 1);
+    assert_eq!(1, 1);
 }
